@@ -1,0 +1,28 @@
+{
+  "name": "fluentquery-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "install-packages": "node jspm.js install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-polyfill": "^6.7.2"
+  },
+  "devDependencies": {
+    "jspm": "^0.17.0-beta.11"
+  },
+  "jspm": {
+    "name": "fluentquery-test",
+    "dependencies": {
+      "css": "github:systemjs/plugin-css@^0.1.20",
+      "qunit": "github:jquery/qunit@^1.22.0"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.8"
+    }
+  }
+}
