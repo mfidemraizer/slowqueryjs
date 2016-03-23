@@ -4,7 +4,7 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "install-packages": "node jspm.js install",
+    "postinstall": "node jspm.js install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

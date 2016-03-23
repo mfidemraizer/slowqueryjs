@@ -13,6 +13,7 @@
   limitations under the License.
 */
 
+import { AutoResetableIterator } from "iterators.js";
 import { QueryQueue } from "collections.js";
 import { SlowQuerySymbols } from "symbols.js";
 
@@ -33,15 +34,18 @@ class SlowQuery {
 
       get[Symbol.toStringTag]() {
             var output = { queries: [] };
-            var queryQueue = this.___queryQueue___;
 
-            for (var query of queryQueue.items) {
+            for (var query of this.___queryQueue___.items) {
                   output.queries.push(query.info.description);
             }
 
-            output.queryCount = queryQueue.count;
+            output.queryCount = this.___queryQueue___.count;
 
             return `FluentQuery ${JSON.stringify(output, null, 3)}`;
+      }
+
+      get[Symbol.iterator]() {
+            return AutoResetableIterator.create(this.toArray());
       }
 
       * ___iterate___(previousIterator, predicate, iterationToken) {
@@ -58,9 +62,17 @@ class SlowQuery {
                   currentItem = previousIterator.next();
 
                   if (!currentItem.done) {
-                        if (typeof predicate(currentItem.value) != "undefined") {
+                        var predicateResult = predicate(currentItem.value);
+                        var skip = typeof predicateResult == "undefined";
+
+                        if (!skip) {
                               skippedAllIterations = false;
-                              yield currentItem.value;
+
+                              if (typeof predicateResult == "object" && predicateResult.hasOwnProperty(SlowQuerySymbols.modified)) {
+                                    yield predicateResult[SlowQuerySymbols.modified];
+                              } else {
+                                    yield currentItem.value;
+                              }
                         } else {
                               noResult = true;
                         }
@@ -88,6 +100,22 @@ class SlowQuery {
                         }
                   }
             }
+      }
+
+      map(selector) {
+            var queryQueue = this.___queryQueue___;
+            var previousIterator = queryQueue.items[queryQueue.count - 1];
+
+            queryQueue.enqueue(() => this.___iterate___(
+                  previousIterator,
+                  item => {
+                        return {
+                              [SlowQuerySymbols.modified]: selector(item)
+                        };
+                  }
+            ), { description: `map(${selector.toString()})` });
+
+            return this;
       }
 
       where(condition, iterationToken) {

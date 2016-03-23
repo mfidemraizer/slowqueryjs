@@ -15,5 +15,6 @@
 
 export var SlowQuerySymbols = Object.freeze({
       resultSeparator: Symbol("result separator"),
-      noResult: Symbol("no result")
+      noResult: Symbol("no result"),
+      modified: Symbol("modified")
 });

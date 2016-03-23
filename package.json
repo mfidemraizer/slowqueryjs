@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/slowquery.min.js",
   "scripts": {
-    "install-packages": "npm i && node jspm install && cd test && npm i && node run install-packages",
+    "postinstall": "node jspm install && cd test && npm i",
     "bundle": "node bundle.js",
     "build": "node node_modules/grunt-cli/bin/grunt default",
     "test": "node node_modules/grunt-cli/bin/grunt test"

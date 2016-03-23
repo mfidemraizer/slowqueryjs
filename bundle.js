@@ -5,5 +5,6 @@ var child = fork("jspm.js", [
       "../dist/slowquery.min.js",
       "--global-name", "SlowQuery",
       "--format", "umd",
-      "--no-runtime"
+      "--no-runtime",
+      "--minify"
 ]);

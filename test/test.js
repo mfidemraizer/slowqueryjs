@@ -15,8 +15,19 @@
 
 "use strict";
 
-QUnit.module("Conversions");
+QUnit.module("Raw iterations");
+QUnit.test("SlowQuery[Symbol.iterator]: Elements are returned in the expected order", (assert) => {
+      var items = [1, 2, 3, 4];
+      var result = SlowQuery.from(items);
 
+      var index = 0;
+      for (var item of result) {
+            assert.equal(item, items[index++]);
+      }
+});
+
+
+QUnit.module("Conversions");
 QUnit.test("SlowQuery.toArray: Elements are returned in the expected order", (assert) => {
       var items = [1, 2, 3, 4];
       var result = SlowQuery.from(items).toArray();
@@ -34,9 +45,25 @@ QUnit.test("SlowQuery.toSet: Returned elements are unique and the expected ones"
       for (var item of result) {
             assert.ok(expected.indexOf(item) > -1, "Expected item found");
       }
-
-      debugger;
 });
+
+
+QUnit.module("Mappers");
+QUnit.test("SlowQuery.map: can map an iterable into other objects", (assert) => {
+      assert.expect(5);
+
+      var items = [1, 2, 3, 4];
+      var result = SlowQuery.from(items).map(item => {
+            return { number: item }
+      }).toArray();
+
+      assert.equal(result.length, 4, "Got expected number of items");
+
+      for (var itemIndex = 0; itemIndex < result.length; itemIndex++) {
+            assert.equal(result[itemIndex].number, items[itemIndex]);
+      }
+});
+
 
 QUnit.module("Searchability");
 QUnit.test("SlowQuery.where: Can search all occurences of some given condition", (assert) => {
